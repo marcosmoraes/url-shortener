@@ -1,0 +1,38 @@
+{
+  "name": "url-shortner",
+  "version": "1.0.0",
+  "description": "rjp-oumx-xni",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/api/server.ts",
+    "dev:web": "vite",
+    "dev:all": "npm run dev & npm run dev:web",
+    "build:web": "vite build",
+    "build": "tsc",
+    "start": "node dist/api/server.js",
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/swagger": "^9.7.0",
+    "@fastify/swagger-ui": "^6.0.0",
+    "better-sqlite3": "^12.11.1",
+    "fastify": "^5.8.5",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^25.9.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
+    "vitest": "^4.1.9"
+  }
+}
