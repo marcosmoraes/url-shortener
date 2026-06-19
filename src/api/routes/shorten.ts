@@ -1,4 +1,5 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
+import { ERROR_RESPONSE_SCHEMA } from '../schemas.js';
 import { generateShortCode } from '../shortcode.js';
 import { isValidHttpUrl } from '../url.js';
 import type { UrlRepository } from '../repository.js';
@@ -37,7 +38,7 @@ export async function shortenRoutes(app: FastifyInstance, repo: UrlRepository): 
         body: bodySchema,
         response: {
           200: responseSchema,
-          400: { type: 'object', properties: { error: { type: 'string' } } },
+          400: ERROR_RESPONSE_SCHEMA,
         },
       },
     },

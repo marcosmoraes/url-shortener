@@ -32,16 +32,6 @@ interface UrlRow {
   expires_at: string | null;
 }
 
-function toRecord(row: UrlRow): UrlRecord {
-  return {
-    id: row.id,
-    shortCode: row.short_code,
-    originalUrl: row.original_url,
-    createdAt: row.created_at,
-    expiresAt: row.expires_at,
-  };
-}
-
 export class UrlRepository {
   constructor(private readonly db: DB) {}
 
@@ -63,7 +53,15 @@ export class UrlRepository {
     const row = this.db
       .prepare('SELECT * FROM urls WHERE short_code = ?')
       .get(shortCode) as UrlRow | undefined;
-    return row ? toRecord(row) : null;
+    return row
+      ? {
+          id: row.id,
+          shortCode: row.short_code,
+          originalUrl: row.original_url,
+          createdAt: row.created_at,
+          expiresAt: row.expires_at,
+        }
+      : null;
   }
 
   /** Lista mais recentes primeiro, com contagem de cliques. */
@@ -77,7 +75,14 @@ export class UrlRepository {
          ORDER BY u.id DESC`,
       )
       .all() as Array<UrlRow & { click_count: number }>;
-    return rows.map((row) => ({ ...toRecord(row), clickCount: row.click_count }));
+    return rows.map((row) => ({
+      id: row.id,
+      shortCode: row.short_code,
+      originalUrl: row.original_url,
+      createdAt: row.created_at,
+      expiresAt: row.expires_at,
+      clickCount: row.click_count,
+    }));
   }
 
   recordClick(urlId: number, input: ClickInput, createdAt: string): void {

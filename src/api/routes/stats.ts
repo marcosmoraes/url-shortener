@@ -1,4 +1,5 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
+import { PARAMS_CODE_SCHEMA, ERROR_RESPONSE_SCHEMA } from '../schemas.js';
 import type { UrlRepository } from '../repository.js';
 
 const responseSchema = {
@@ -35,13 +36,10 @@ export async function statsRoutes(app: FastifyInstance, repo: UrlRepository): Pr
     {
       schema: {
         summary: 'Estatísticas de cliques (últimos 30 dias)',
-        params: {
-          type: 'object',
-          properties: { code: { type: 'string' } },
-        },
+        params: PARAMS_CODE_SCHEMA,
         response: {
           200: responseSchema,
-          404: { type: 'object', properties: { error: { type: 'string' } } },
+          404: ERROR_RESPONSE_SCHEMA,
         },
       },
     },

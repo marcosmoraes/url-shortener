@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
+import { PARAMS_CODE_SCHEMA, ERROR_RESPONSE_SCHEMA } from '../schemas.js';
 import type { UrlRepository } from '../repository.js';
 
-/** True se expiresAt existe e já passou. */
 function isExpired(expiresAt: string | null, now: Date): boolean {
   return expiresAt !== null && new Date(expiresAt).getTime() <= now.getTime();
 }
@@ -12,9 +12,11 @@ export async function redirectRoutes(app: FastifyInstance, repo: UrlRepository):
     {
       schema: {
         summary: 'Redireciona para a URL original',
-        params: {
-          type: 'object',
-          properties: { code: { type: 'string' } },
+        params: PARAMS_CODE_SCHEMA,
+        response: {
+          301: { type: 'object' },
+          404: ERROR_RESPONSE_SCHEMA,
+          410: ERROR_RESPONSE_SCHEMA,
         },
       },
     },
@@ -24,7 +26,9 @@ export async function redirectRoutes(app: FastifyInstance, repo: UrlRepository):
       if (record === null) {
         return reply.code(404).send({ error: 'Short code não encontrado' });
       }
-      if (isExpired(record.expiresAt, new Date())) {
+
+      const now = new Date();
+      if (isExpired(record.expiresAt, now)) {
         return reply.code(410).send({ error: 'Short link expirado' });
       }
 
@@ -35,7 +39,7 @@ export async function redirectRoutes(app: FastifyInstance, repo: UrlRepository):
           userAgent: request.headers['user-agent'] ?? null,
           ip: request.ip,
         },
-        new Date().toISOString(),
+        now.toISOString(),
       );
 
       return reply.code(301).redirect(record.originalUrl);

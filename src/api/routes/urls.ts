@@ -25,14 +25,7 @@ export async function urlsRoutes(app: FastifyInstance, repo: UrlRepository): Pro
       },
     },
     async (_request, reply) => {
-      const items = repo.list().map((item) => ({
-        shortCode: item.shortCode,
-        originalUrl: item.originalUrl,
-        createdAt: item.createdAt,
-        expiresAt: item.expiresAt,
-        clickCount: item.clickCount,
-      }));
-      return reply.code(200).send(items);
+      return reply.code(200).send(repo.list());
     },
   );
 }
